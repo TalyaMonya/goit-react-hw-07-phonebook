@@ -2,13 +2,13 @@ import { nanoid } from "@reduxjs/toolkit";
 import { Div, Input, Label, Span } from "./Filter.styled";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { getFilter } from "redux/selectors";
+import { selectFilter } from "redux/selectors";
 import { changeFilter } from "redux/filterSlice";
 
 const filterInputId = nanoid();
 
 export const Filter = () => {
-    const value = useSelector(getFilter);
+    const value = useSelector(selectFilter);
     const dispatch = useDispatch();
 
     const onChange = event => {

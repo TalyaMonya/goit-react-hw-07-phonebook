@@ -1,38 +1,28 @@
 import { useDispatch, useSelector } from "react-redux";
 import { List, ListItem, Btn } from "./ContactList.styled";
 import {RiDeleteBinLine} from 'react-icons/ri'
-import { getContacts, getFilter } from "../../redux/selectors";
-import { removeContact } from "redux/contactsSlice";
-import { useMemo } from "react";
+import { selectVisibleContacts } from "../../redux/selectors";
+import { deleteContacts } from "redux/operations";
+
 
 
 export const ContactList = () => {
-    const contacts = useSelector(getContacts);
-    const filter = useSelector(getFilter);
-
-    const getVisibleContacts = useMemo(() => {
-        const normalizedFilter = filter.toLowerCase();
-
-        return contacts.filter(contact =>
-             contact.name.toLowerCase().includes(normalizedFilter))
-    }, [contacts, filter])
+    const contacts = useSelector(selectVisibleContacts);
 
     const dispatch = useDispatch();
-    const handleDelete = contactId => {
-        dispatch(removeContact(contactId));
-    }; 
 
+   
     return (
         <List>
-            {getVisibleContacts.map(({ name, number, id }) => {
+            {contacts.map(contact => {
                 return (
-                    <ListItem key={id}>
-                        <span>{name}:</span>
-                        <span>{number}</span>
+                    <ListItem key={contact.id}>
+                        <span>{contact.name}:</span>
+                        <span>{contact.phone}</span>
                         <Btn
                         type="button"
                         name="delete"
-                        onClick={() => handleDelete(id)}>
+                        onClick={() => dispatch(deleteContacts(contact.id))}>
                         <RiDeleteBinLine size="14"/>
                     </Btn>
                </ListItem>

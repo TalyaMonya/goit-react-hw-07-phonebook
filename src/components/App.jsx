@@ -1,15 +1,25 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { getContacts } from "redux/selectors";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectContacts, selectError, selectIsLoading } from "redux/selectors";
 
 import { Layout, Title, SubTitle, Empty } from "./Layout";
 import { ContactForm } from "./ContactForm/ContactForm";
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from "./Filter/Filter";
 import { ToastContainer } from "react-toastify";
+import { fetchContacts } from "redux/operations";
+import { Loader } from "utils/loader";
 
 export const App = () => {
-  const contacts = useSelector(getContacts)
+  const contacts = useSelector(selectContacts);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
     return (
       <Layout>
@@ -21,9 +31,9 @@ export const App = () => {
         ) : (
             <Empty>Your phonebook is empty. Add first contact!</Empty>
         )}
-        {contacts.length > 0 && (
-          <ContactList />
-        )}
+
+        {isLoading && !error && !contacts.length && (<Loader/>) } 
+        {contacts.length > 0 && (<ContactList />)}
         <ToastContainer/>
       </Layout>
     )
